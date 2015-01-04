@@ -1,0 +1,59 @@
+sample_config:
+  setup:
+    smtp: mysmtpserver.cox.net
+  contact_groups:
+    - me@yahoo.com
+    - you@gmail.com
+#targets to backup to
+  targets:
+    contact: me@you.com   #send email report to this contact any time a backup was made to any target
+    local:      #reserved word to use local instance to backup to
+      path: /mybackups
+    myremotehost:
+      host: mysanstuff.com/2020
+      port: 2020
+      ssh-rsa: AAAA23r23B3NzaC1yc2EAAAAABAQC0g+ZTxC7weoIJLUafOgrm+
+    myftphost:
+      failover: true #act as default backup target if other targets failed to be contacted
+      host: mysanstuff.com
+      username: myuser
+      password: mypass
+    usb:    #reserved word for plugged in usb stick
+      capacity: 128   #default in GB OR....
+      id: 2342352453rgsgsg #unique ID of device
+      overwrite: false  #do not overwrite old backups if device is full
+#sources to backup from
+  sources:
+    mywebsrv:
+      addr: 2.2.2.2
+      contact: me@you.com   #send email report to this contact any time a backup was made from this target
+    fs:
+      addr: 2.2.2.2
+#backup schedules
+  schedules:
+    target: usb         #target override for all
+    when: daily
+    compress:        #compress override AND generic compress options
+      type: 7z
+      max_performance: true   #use maximum performance OR
+      min_space: true         #use min space
+    mywebsrv:
+      /var/www:
+        when: daily
+        preserve_perm: true
+        target: usb         #target override at entry level
+        backupspan: 7       #keep last 7 backups
+      /var/logs:
+        when: daily
+    fs:
+      target: myftphost   #target override at host level
+      shares:
+        when: ddaily
+        backupspan: 7       #keep last 7 weeks
+      /var/logs:
+    usb:    #reserved word for plugged in usb stick
+      /movies:
+        when: now       #backup when plugged in
+        capacity: 128   #default in GB OR....
+        id: 2342352453rgsgsg #unique ID of device
+        overwrite: false  #do not overwrite old backups if device is full
